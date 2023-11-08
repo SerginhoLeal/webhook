@@ -32,6 +32,10 @@ app.use('/instance/fetchInstances', (req, res) => {
 
 app.use('/webhook-lead', (req, res) => {
   const body = req.body;
+  console.log({
+    body,
+    url: req.originalUrl
+  })
 
   io.emit('message', body)
 
