@@ -1,8 +1,8 @@
 var express = require('express');
-var createServer = require('node:http').createServer;
+var http = require('http');
 var Server = require('socket.io').Server;
 var app = express();
-var server = createServer(app);
+var server = http.createServer(app);
 var io = new Server(server);
 var BASE_URL = 'https://api.whatsapp.laks.net.br/';
 var API_KEY = 'B6D711FCDE4D4FD5936544120E713976';

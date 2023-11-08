@@ -1,9 +1,9 @@
 const express = require('express');
-const { createServer } = require('node:http');
+const http = require('http');
 const { Server } = require('socket.io');
 
 const app = express();
-const server = createServer(app);
+const server = http.createServer(app);
 const io = new Server(server);
 
 const BASE_URL = 'https://api.whatsapp.laks.net.br/';
