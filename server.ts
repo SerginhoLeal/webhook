@@ -18,22 +18,10 @@ io.on('connection', (socket) => {
 
 app.use(express.json());
 
-app.use('/instance/fetchInstances', (req, res) => {
-  return fetch(`${BASE_URL}/instance/fetchInstances`, {
-    method: 'GET',
-    headers: {
-      'apikey': API_KEY
-    }
-  })
-    .then(jsn => jsn.json())
-    .then(success => res.status(201).json(success))
-    .catch(error => res.status(400).json(error))
-})
-
 app.use('/webhook-lead', (req, res) => {
   const body = req.body;
   console.log({
-    body,
+    body: JSON.stringify(body, null, 5),
     url: req.originalUrl
   })
 

@@ -13,21 +13,10 @@ io.on('connection', function (socket) {
     });
 });
 app.use(express.json());
-app.use('/instance/fetchInstances', function (req, res) {
-    return fetch("".concat(BASE_URL, "/instance/fetchInstances"), {
-        method: 'GET',
-        headers: {
-            'apikey': API_KEY
-        }
-    })
-        .then(function (jsn) { return jsn.json(); })
-        .then(function (success) { return res.status(201).json(success); })
-        .catch(function (error) { return res.status(400).json(error); });
-});
 app.use('/webhook-lead', function (req, res) {
     var body = req.body;
     console.log({
-        body: body,
+        body: JSON.stringify(body, null, 5),
         url: req.originalUrl
     });
     io.emit('message', body);
