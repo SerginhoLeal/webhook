@@ -1,17 +1,62 @@
 const express = require('express');
-const cors = require('cors');
+const { createServer } = require('node:http');
+const { Server } = require('socket.io');
 
 const app = express();
+const server = createServer(app);
+const io = new Server(server);
+
+const BASE_URL = 'https://api.whatsapp.laks.net.br/';
+const API_KEY = 'B6D711FCDE4D4FD5936544120E713976';
+
+io.on('connection', (socket) => {
+  console.log('socket connected');
+  socket.on('disconnect', (socket) => {
+    console.log('socket disconnected');
+  });
+});
 
 app.use(express.json());
 
-app.use(cors());
-
-app.use('/webhook-lead', (req: any, res: any) => {
-  console.log(req.originalUrl);
-  console.log(req.body);
-
-  return res.status(201).json({ message: req.originalUrl })
+app.use('/instance/fetchInstances', (req, res) => {
+  return fetch(`${BASE_URL}/instance/fetchInstances`, {
+    method: 'GET',
+    headers: {
+      'apikey': API_KEY
+    }
+  })
+    .then(jsn => jsn.json())
+    .then(success => res.status(201).json(success))
+    .catch(error => res.status(400).json(error))
 })
 
-app.listen(3000, () => console.log('Started'))
+app.use('/webhook-lead', (req, res) => {
+  const body = req.body;
+
+  io.emit('message', body)
+
+  return res.status(201).json({ succes: true });
+});
+
+server.listen(3001, () => {
+  console.log('server running at http://localhost:3001');
+});
+
+/**
+ * @whatsapp
+ *    |
+ *    |     connecting
+ *    |
+ * @webhook
+ *    |
+ *    |     socket.emit('QRCode_Scanned', ()=>{})
+ *    |
+ * @front
+ *    |
+ *    |     socket.on('QRCode_Scanned', ()=>{})
+ *    |
+ * @screen
+ *    |
+ *    |     show the button
+ *    x
+ */
